@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<HTML lang="en">
+
+<head>
+    <title>Live Info</title>
+    <meta charset="=UTF=8">
+    <meta name="viewport" content="width=devicce-width. initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+</head>
+
+<body>
+
+    <div>
+        <div id ="data1">
+          <h2> Ethereum (Cryptocompare) in USD:</h2>
+        </div>
+          <p id ="bitcoindata"></p>
+    </div>
+
+    <div>
+        <div id ="data1">
+          <h2> Bitcoin (Cryptocompare) in USD:</h2>
+        </div>
+          <p id ="bitcoindata1"></p>
+    </div>
+
+    <div>
+        <div id ="data1">
+          <h2> Litecoin (Cryptocompare) in USD:</h2>
+        </div>
+          <p id ="bitcoindata2"></p>
+    </div>
+
+   
+
+    <script>
+        
+        const getBtcData = async () => {
+   fetch('https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH,LTC,XRP&tsyms=USD&api_key=45a671b07f7e280524342638a6a968a30d43fa508db3f409efc6d10ae1f112c9')
+  .then(response => response.json())
+  .then(data => {   
+    console.log(data);
+    document.getElementById("bitcoindata").innerHTML =data.ETH.USD;
+    document.getElementById("bitcoindata1").innerHTML=data.BTC.USD;
+    document.getElementById("bitcoindata2").innerHTML=data.LTC.USD;
+  });
+}
+
+getBtcData();
+tcount=setInterval(function(){
+  tcount++
+  if (tcount==10) {getBtcData(); tcount=0}
+},1000);
+        
+        
+    
+    </script>
+</body>
+</HTML>

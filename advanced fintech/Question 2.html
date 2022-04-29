@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Create a BSV address QR code</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <script 
+        type="text/javascript" 
+        src="https://unpkg.com/bsv@1.5.3/bsv.min.js">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script 
+        type="text/javascript" 
+        src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js">
+    
+    </script>
+<script
+type="text/javascript"
+src="https://unpkg.com/bsv@1.5.3/bsv-mnemonic.min.js">
+</script>
+    <style>   
+        Body {  
+            font-family: Calibri, Helvetica, sans-serif;
+            color:white; 
+            background-color: black;
+               
+        }  
+        #block1 {
+            background-color:black; 
+            width: 48%; 
+            padding: 10px; 
+            margin-bottom: 3px;
+            border: 2px solid rgb(0, 0, 0);
+            font-family: Calibri, Helvetica, sans-serif;
+        }
+
+        #block2 {
+            background-color:black; 
+            width: 70%; 
+            padding: 10px;
+            border: 2px solid rgb(0, 0, 0);
+            font-family: Calibri, Helvetica, sans-serif;
+            margin-bottom: 3px;
+        }
+
+        #block3 {
+            background-color:pink; 
+            width: 70%; 
+            padding: 10px;
+            border: 2px solid rgb(0, 0, 0);
+            font-family: Calibri, Helvetica, sans-serif;
+            margin-bottom: 3px;
+        }
+    </style>
+  </head>
+  
+  <body>
+      <center>
+      <div id="block1">
+           <h1>Your Public Key:</h1>
+           <p id="pubText"></p>
+       </div>
+      <div id="block2">
+           <h1>Your Address is:</h1> 
+           <p id="addressText"> </p>
+      </div>
+
+      <div id="block3">
+           <h1>Your QR code:</h1>
+           <p id="qrcode"></p>
+      
+      </div>
+      <div id="block4">
+        <h1>Balance in Satoshis:</h1>
+        <p id="balance"></p>
+    </div>
+        
+    <div id="block">
+        <h1 id="head">HD Private key:</h1> 
+        <p id="Text"></p>
+    </div>
+    <div id="block">
+        <h1 id="head">HD Public key:</h1> 
+        <p id="Text1"></p>
+    </div> 
+
+    <div id="block211">
+           <h1>Mnemonic:</h1> 
+           <p id="phrase"> </p>
+      </div>
+      
+      <div id="block111">
+           <h1>Private Key:</h1> 
+           <p id="privText"> </p>
+      </div>
+      
+       <div id="block200">
+           <h1>Address:</h1> 
+           <p id="addressTextt"> </p>
+      </div>
+      
+      <div id="block300">
+
+           <h1>QR code:</h1>
+           <p id="qrcodee"></p>
+
+      </div>
+   
+    <script> 
+    var privKey = bsv.PrivateKey.fromRandom();
+    var pubKey = bsv.PublicKey.fromPrivateKey(privKey);
+    var address = bsv.Address.fromPublicKey(pubKey);
+    
+
+    var z = document.querySelector("#pubText");
+    z.innerHTML = pubKey.toString();
+
+    var y = document.querySelector("#addressText");
+    y.innerHTML = address.toString();
+    
+    var addressCode = 'bitcoinsv:' + address;
+    
+    new QRCode(document.getElementById("qrcode"), addressCode);
+
+    var config = {
+    method: 'get',
+    url: "https://api.whatsonchain.com/v1/bsv/main/address/" +
+    address + "/balance",
+  }; 
+
+    axios(config)
+    .then((response) => {
+      let data = JSON.stringify(response.data);
+      let p = document.getElementById("balance");
+      p.innerHTML = parseFloat(JSON.parse(data).confirmed);
+    })
+    var hdPrivateKey = bsv.HDPrivateKey.fromRandom();
+
+    
+    var hdPublicKey = bsv.HDPublicKey.fromHDPrivateKey(hdPrivateKey);
+    
+    
+    var p = document.querySelector("#Text");
+    p.innerHTML = hdPrivateKey.toString();
+    
+    var q = document.querySelector("#Text1");
+    q.innerHTML = hdPublicKey.toString();
+
+    var Mnemonic = window.bsvMnemonic;
+    var words =bsvMnemonic.fromRandom() ;
+    
+    var hdPrivateKey = bsv.HDPrivateKey.fromSeed(words.toSeed())
+    var privateKey = hdPrivateKey.deriveChild("m/44'/0'/0'").privateKey;
+    var address = bsv.Address.fromPrivateKey(privateKey).toString();
+    
+    var p = document.querySelector("#phrase");
+    p.innerHTML = words.toString();
+    
+    var p = document.querySelector("#privText");
+    p.innerHTML = privateKey.toString();
+    
+    var y = document.querySelector("#addressTextt");
+    y.innerHTML = address;
+    
+    var addressCode = 'bitcoinsv:' + address;
+    
+    new QRCode(document.getElementById("qrcodee"), addressCode);
+    
+
+
+     </script>
+</center>
+  </body>
+</html>
